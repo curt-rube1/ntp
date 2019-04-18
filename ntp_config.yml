@@ -1,0 +1,17 @@
+---
+# apply ntp updates
+# print updates ONLY when changes occured
+- name: "PLAY 1: manage NTP"
+  hosts: routers
+  tasks:
+    - name: "TASK 1: configure IOS NTP"
+      ios_config:
+         src: "templates/ntp_setup.j2"
+      register: ntp_updates
+      notify: ntp_was_changed
+
+  handlers:
+    - name: "HANDLER 1: print changes ONLY IF changed occurred"
+      debug:
+        var: ntp_updates['updates']
+      listen: ntp_was_changed
